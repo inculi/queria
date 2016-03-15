@@ -1,4 +1,4 @@
-import sys
+from google import search
 
 urls = []
 
