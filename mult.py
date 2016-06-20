@@ -87,11 +87,12 @@ def getMassCards(inputUrl,currentQuestion):
     possibleAnswers = 0
     for x in xrange(0,len(questions)):
         if int(fuzz.token_set_ratio(currentQuestion.lower(), questions[x].lower())) > 90:
-            print("Found an answer for \"" + str(questions[x])[:10] + "...")
+            print("Found an answer for \"" + str(questions[x])[:10] + "...\"")
             import subprocess
             command = "wc -l answers.txt | awk '{print $1}'"
             output = int(str(subprocess.check_output(command, shell=True)).replace("\n",""))
             if output is not 0:
+                print("Output is not Zero!!!")
                 answerFile.write("\n"+questions[x]+"\n")
                 answerFile.write(answers[x])
                 possibleAnswers += 1
@@ -99,115 +100,37 @@ def getMassCards(inputUrl,currentQuestion):
                 answerFile.write(questions[x]+"\n")
                 answerFile.write(answers[x])
                 possibleAnswers += 1
-            # if possibleAnswers == 0:
-                # print("\nNo possible answers found.")
 
-def answerMC():
-    inputQuestion = raw_input("What is your question?\n > ")
-    answerAmount = int(raw_input("How many possible answers do you know?\n > "))
-    answers = []
-    for x in xrange(0,answerAmount):
-        answers.append(raw_input("Please input answer " + str(x+1) + "\n > "))
-    # ========================   END PRIMARY VARIABLES   ===========================
-
-    print("\nSearching...")
-    searchURLs = getURLs(inputQuestion,answerAmount)
-
-    paragraphTexts = []
-
-    for url in searchURLs:
-        print(url)
-        parsePage(url)
-    print("\n") # make some room
-
-    scores = [0] * answerAmount
-
-    for x in xrange(0,len(answers)):
-        for paragraph in paragraphTexts:
-            scores[x] += paragraph.lower().count(answers[x].lower())
-
-    print("Scores:")
-    for x in xrange(0,len(answers)):
-        print answers[x]
-        print scores[x]
-        print("\n")
-
-def answerFree():
-    inputQuestion = raw_input("\n What is your question?\n\n > ")
-    print("\nSearching...")
-    urls = getURLs(inputQuestion,0)
-
-    for url in urls:
-        getCards(url)
-
-def answerImport():
-    # make sure the files exist for importing data
-    try:
-        questionFile = open("questions.txt","r")
-        answerFile = open("answers.txt",'w')
-    except:
-        print("You do not have files:\n - questions.txt\n - answers.txt\nin your directory. Making them now...")
-        os.system("rm *.txt; touch answers.txt questions.txt")
-        print("Go back and add questions to questions.txt, please.\nExiting now...")
-        exit()
-
-    # place the questions into a list
-    inputQuestions = [question.replace("\n","") for question in questionFile]
-
-    # verify for debugging
-    print inputQuestions
-
-    # begin the search.
-    relevantUrls = []
-    print("\nSearching...")
-    for question in inputQuestions:
-        # get the 3 quizlet links for the question
-        for item in getURLs(question,0):
-            relevantUrls.append(item)
-
-    relevantUrls = list(set(relevantUrls)) # remove the duplicates
-
-    for question in inputQuestions:
-        print(question)
-        for url in relevantUrls:
-            getMassCards(url,question)
-
-# =========================   BEGIN MAIN FUNCTION   ============================
-# os.system("clear")
-print("""                       _
-  __ _ _   _  ___ _ __(_) __ _
- / _` | | | |/ _ \ '__| |/ _` |
-| (_| | |_| |  __/ |  | | (_| |
- \__, |\__,_|\___|_|  |_|\__,_|
-    |_|
-""")
-questionOption = int(raw_input(""" OPTIONS:
- --------
- 1. Multiple Choice
- 2. Free Response
- 3. Import Questions
- 4. Exit
-
- > """))
-
-if questionOption == 1:
-    answerMC()
-
-elif questionOption == 2:
-    subquestionOption = raw_input("""\n SEARCH WITH:
- -----------
- 1. Quizlet
- 2. Wikipedia\n\n > """)
-    if subquestionOption == 1:
-        answerFree()
-    else:
-        import wiki
-
-
-elif questionOption == 3:
-    answerImport()
-
-else:
-    print("\nThank you for using queria! :)\n")
+try:
+    questionFile = open("questions.txt","r")
+    answerFile = open("answers.txt",'w')
+except:
+    print("You do not have files:\n - questions.txt\n - answers.txt\nin your directory. Making them now...")
+    os.system("rm *.txt; touch answers.txt questions.txt")
+    print("Go back and add questions to questions.txt, please.\nExiting now...")
     exit()
-# ==========================   END MAIN FUNCTION   =============================
+
+# open the question and answer files
+# questionFile = open("questions.txt","r")
+# answerFile = open("answers.txt",'w')
+
+# place the questions into a list
+inputQuestions = [question.replace("\n","") for question in questionFile]
+
+# verify for debugging
+print inputQuestions
+
+# begin the search.
+relevantUrls = []
+print("\nSearching...")
+for question in inputQuestions:
+    # get the 3 quizlet links for the question
+    for item in getURLs(question,0):
+        relevantUrls.append(item)
+
+relevantUrls = list(set(relevantUrls)) # remove the duplicates
+
+for question in inputQuestions:
+    print(question)
+    for url in relevantUrls:
+        getMassCards(url,question)
