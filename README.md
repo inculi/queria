@@ -15,12 +15,17 @@ Your question is searched specifically within the realm of quizlet. Only the fir
 - [requests](http://docs.python-requests.org/en/master/)
 
 ## Installation
-It is easiest to begin with the pip installations.  
-`pip install beautifulsoup4`  
-`pip install requests`  
-`pip install fuzzywuzzy`  
-`pip install python-levenshtein`  
-
-[Download](https://pypi.python.org/pypi/google#downloads) the google package for python.
+`$ pip install google`  
+`$ pip install beautifulsoup4`  
+`$ pip install requests`  
+`$ pip install fuzzywuzzy`  
+`$ pip install python-levenshtein`  
 
 That's it.
+
+## Coming Soon
+As of right now, the Free Response section is powered only with quizlet. This means that if a quizlet doesn't have the answer to your question, you're out of luck. In the future, I plan on accessing wikipedia articles, finding relevant passages within them, and then summarizing those passages.  
+
+Also, I plan on experimenting putting your search phrase into quotes when searching google (thus searching for the exact phrase), and then also parsing the pages within those results.
+
+Both of these things would add quite a few dependencies, though (the summarization would require about 2 more packages and page parsing would require nltk with at least 3 of its corpora). We shall see what I decide on...

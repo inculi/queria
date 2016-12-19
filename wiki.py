@@ -102,7 +102,21 @@ def readArticle(url,inputQuestion):
     """
     # download the page and store its filtered content
     topic = url.rsplit("wikipedia.org/wiki/",1)[1]
-    pageText = wikipedia.WikipediaPage(topic).content
+    try:
+        topic = topic.replace("%E2%80%93","-")
+        pageText = wikipedia.WikipediaPage(topic).content
+    except KeyError:
+        print("There was an error loading the url, having to do with Unicode.")
+        import re
+        re1='((?:[a-z][a-z0-9_]*))'	# Variable Name 1
+
+        rg = re.compile(re1,re.IGNORECASE|re.DOTALL)
+        m = rg.search(topic)
+        if m:
+            topic=m.group(1).replace("_"," ")
+        print(u"Topic is now " + topic)
+        print wikipedia.search(topic)
+        pageText = wikipedia.WikipediaPage(topic).content
 
     # break the page into sentences for sifting through.
     pageSentences = nltk.sent_tokenize(pageText)
@@ -140,8 +154,10 @@ def answerQuestion(questionString):
     print(paragraph)
 
 # ============================   MAIN FUNCTION   ===============================
-if __name__ == "main":
+if __name__ == "__main__":
     print("Ready for some debugging, eh?")
+    answerQuestion("who was the first president of the united states")
+
 elif __name__ == "wiki":
     inputQuestion = raw_input("\n What is your question?\n\n > ")
     print("\nSearching...")
